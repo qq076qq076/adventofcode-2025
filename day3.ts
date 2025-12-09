@@ -2,34 +2,34 @@ import { day3TestInput, day3input } from "./day3input";
 
 const inputList = day3input.split("\n");
 
-const joltages: number[] = [];
+const joltages: string[] = [];
 
-function getJoltage(input: string): number {
+function getJoltage(input: string, digits: number, fromIndex = 0): string {
   for (let a = 9; a > -1; a--) {
-    const firstIndex = input.indexOf(a.toString());
-    if (firstIndex === -1) {
-      continue;
-    }
-    for (let b = 9; b > -1; b--) {
-      const lastIndex = input.indexOf(b.toString(), firstIndex + 1);
-      if (lastIndex === -1) {
-        continue;
+    const index = input.indexOf(a.toString(), fromIndex);
+    if (index !== -1) {
+      if (digits === 1) {
+        return a.toString();
+      } else {
+        const nextDigits = getJoltage(input, digits - 1, index + 1);
+        if (nextDigits !== "") {
+          return a.toString() + nextDigits;
+        }
       }
-      return parseInt(`${a}${b}`);
     }
   }
-  return 0;
+  return "";
 }
 
 inputList.forEach((input) => {
-  const joltage = getJoltage(input);
+  const joltage = getJoltage(input, 12);
   joltages.push(joltage);
 });
 
 console.log(joltages);
 
-const total = joltages.reduce((acc, curr) => {
-  return acc + curr;
+const total = joltages.reduce((acc: number, curr: string) => {
+  return acc + parseInt(curr);
 }, 0);
 
 console.log(total);
