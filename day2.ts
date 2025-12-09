@@ -4,17 +4,23 @@ const inputs = day2input
   .split(",")
   .map((line) => line.split("-").map(Number));
 
-console.log(inputs);
-
 function checkValid(input: number): boolean {
   const inputStr = input.toString();
-  if (inputStr.length % 2 !== 0) {
-    return true;
+  const maxPoint = Math.ceil(inputStr.length / 2);
+  for (let strLength = maxPoint; strLength > 0; strLength--) {
+    if (inputStr.length % strLength !== 0) {
+      continue;
+    }
+    const repeatCount = inputStr.length / strLength;
+    if (repeatCount === 1) {
+      continue;
+    }
+    const matchStr = inputStr.slice(0, strLength).repeat(repeatCount);
+    if (matchStr === inputStr) {
+      return false;
+    }
   }
-  const halfPoint = inputStr.length / 2;
-  const firstHalf = inputStr.slice(0, halfPoint);
-  const secondHalf = inputStr.slice(halfPoint);
-  return firstHalf !== secondHalf;
+  return true;
 }
 
 const invalidList: number[] = [];
