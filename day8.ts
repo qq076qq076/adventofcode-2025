@@ -17,9 +17,7 @@ function calulateDistance(
   );
 }
 
-const inputs = day8input
-  .split("\n")
-  .map((line) => line.split(",").map(Number));
+const inputs = day8input.split("\n").map((line) => line.split(",").map(Number));
 
 const lineCount = 1000;
 
@@ -54,7 +52,10 @@ const connectedList: string[][] = inputs.map((item) => [
   `${item[0]},${item[1]},${item[2]}`,
 ]);
 
-function findInConnectedList(coordinate: Coordinate) {
+function findInConnectedList(
+  connectedList: string[][],
+  coordinate: Coordinate
+) {
   const coordinateStr = `${coordinate.x},${coordinate.y},${coordinate.z}`;
   return connectedList.findIndex((items) => items.includes(coordinateStr));
 }
@@ -65,8 +66,14 @@ for (
   disIndex++
 ) {
   const item = disList[disIndex];
-  const lineAIndex: number = findInConnectedList(item.a) as number;
-  const lineBIndex: number = findInConnectedList(item.b) as number;
+  const lineAIndex: number = findInConnectedList(
+    connectedList,
+    item.a
+  ) as number;
+  const lineBIndex: number = findInConnectedList(
+    connectedList,
+    item.b
+  ) as number;
   if (lineAIndex !== lineBIndex) {
     connectedList[lineAIndex].push(...connectedList[lineBIndex]);
     connectedList.splice(lineBIndex, 1);
@@ -81,3 +88,36 @@ const sum = connectedList
   .reduce((acc, curr) => acc * curr, 1);
 
 console.log(sum);
+
+// ------------------- Part 2 -------------------
+
+let connectedList2: string[][] = inputs.map((item) => [
+  `${item[0]},${item[1]},${item[2]}`,
+]);
+let connectedCount = connectedList2.length;
+let lastConnectAIndex = 0;
+let lastConnectBIndex = 0;
+for (
+  let disIndex = 0;
+  disIndex < disList.length && connectedCount > 1;
+  disIndex++
+) {
+  const item = disList[disIndex];
+  const lineAIndex: number = findInConnectedList(
+    connectedList2,
+    item.a
+  ) as number;
+  const lineBIndex: number = findInConnectedList(
+    connectedList2,
+    item.b
+  ) as number;
+  if (lineAIndex !== lineBIndex) {
+    connectedList2[lineAIndex].push(...connectedList2[lineBIndex]);
+    connectedList2.splice(lineBIndex, 1);
+    connectedCount = connectedList2.length;
+    lastConnectAIndex = item.a.x;
+    lastConnectBIndex = item.b.x;
+  }
+}
+
+console.log("coordinates ", lastConnectAIndex * lastConnectBIndex);
